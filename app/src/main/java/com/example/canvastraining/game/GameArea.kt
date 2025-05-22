@@ -1,5 +1,6 @@
 package com.example.canvastraining.game
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -16,8 +17,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -29,14 +32,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.canvastraining.DataStoreManager
 import kotlinx.coroutines.delay
 import kotlin.math.min
 
 
 @Composable
-fun GameArea(){
-    val snakeActionList = remember { mutableStateOf(listOf<()->Unit>()) }
+fun GameArea(size:Int, difficulty:Int){
 
+    val gridSize = size
+    var difficulty = when(difficulty){10->300 20->100 30->50 else->300}
+
+    val snakeActionList = remember { mutableStateOf(listOf<()->Unit>()) }
+    val gameViewModel: GameViewModel = hiltViewModel()
+    val openDialog = remember { mutableStateOf(false) }
+    val recordScore = remember {mutableStateOf(0) }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -54,13 +65,13 @@ fun GameArea(){
             val width = constraints.maxWidth
             val height = constraints.maxHeight
 
-            val rows = 15
-            val cols = 15
+            val rows = gridSize
+            val cols = gridSize
+
             val areaSize = min(width, height).dp / LocalDensity.current.density
             val cellSize = (min(width, height)/rows).toFloat()
 
             val game = remember { mutableStateOf(true) }
-            val difficulty = 150
             val headX = remember { mutableStateOf(rows/2) }
             val headY = remember { mutableStateOf(rows/2) }
             val tail = remember { mutableStateOf(mutableListOf<Pair<Int, Int>>()) }
@@ -87,7 +98,7 @@ fun GameArea(){
 
 
                 // Get ready for start
-                for (i in 0..3) {
+                for (i in 0..2) {
                     tail.value.add(Pair(headX.value - 1,headY.value))
                 }
 
@@ -128,8 +139,12 @@ fun GameArea(){
                     if ( Pair(headX.value, headY.value) in tail.value) {
                         promptText.value = "Oyun Bitti ! | Puan: ${score.value}"
                         game.value = false
-                    }
+                        if(checkHighScore(gameViewModel, score.value)){
+                            recordScore.value = score.value
+                            openDialog.value = true
+                        }
 
+                    }
 
                     delay(timeMillis = difficulty.toLong())
                 }
@@ -214,8 +229,11 @@ fun GameArea(){
 
 
         }
+        if(openDialog.value) { getUserName(openDialog, gameViewModel, recordScore.value) }
+        ControllerUI(Modifier
+            .weight(0.35f)
+            .padding(20.dp), snakeActionList.value)
 
-        ControllerUI(Modifier.weight(0.35f).padding(20.dp), snakeActionList.value)
     }
 
 

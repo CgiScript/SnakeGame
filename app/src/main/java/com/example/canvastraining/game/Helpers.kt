@@ -19,3 +19,18 @@ fun generateRandomFood(
     return point
 }
 
+fun checkHighScore(viewModel: GameViewModel, score: Int): Boolean{
+    val scoreList = viewModel.recordList.value.sortedByDescending { it.highScore }.take(5)
+    var record: Boolean
+
+
+    if (scoreList.isEmpty()){
+        record = true
+    }else{
+        record = score > scoreList.minOf { it.highScore }
+
+    }
+
+    return record
+}
+

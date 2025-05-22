@@ -6,6 +6,7 @@ import com.example.canvastraining.data.RecordDao
 import com.example.canvastraining.data.RecordDatabase
 import com.example.canvastraining.data.RecordRepository
 import com.example.canvastraining.domain.AddRecordUseCase
+import com.example.canvastraining.domain.DeleteAllRecordsUseCase
 import com.example.canvastraining.domain.DeleteRecordUseCase
 import com.example.canvastraining.domain.GetAllRecordsUseCase
 import com.example.canvastraining.domain.UpdateRecordUseCase
@@ -43,6 +44,7 @@ object AppModule {
             DeleteRecordUseCase(repo),
             UpdateRecordUseCase(repo),
             GetAllRecordsUseCase(repo),
+            DeleteAllRecordsUseCase(repo)
         )
     }
 

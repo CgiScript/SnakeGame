@@ -22,4 +22,8 @@ interface RecordDao {
     @Query("SELECT * FROM record")
     fun getAllRecords(): Flow<List<Record>>
 
+    @Query("DELETE FROM record")
+    suspend fun deleteAllRecords()
+
+
 }
