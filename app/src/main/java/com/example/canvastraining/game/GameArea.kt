@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.canvastraining.DataStoreManager
+import com.example.canvastraining.ui.ForestGreen
+import com.example.canvastraining.ui.SageGreen
+import com.example.canvastraining.ui.SandBeige
 import kotlinx.coroutines.delay
 import kotlin.math.min
 
@@ -51,14 +55,14 @@ fun GameArea(size:Int, difficulty:Int){
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(Color.LightGray)
+        .background(SageGreen)
         .systemBarsPadding()
     ){
 
         BoxWithConstraints(modifier = Modifier
             .weight(0.60f)
             .fillMaxWidth()
-            .background(Color.LightGray)
+            .background(SageGreen)
             .padding(10.dp)
         ) {
 
@@ -152,44 +156,44 @@ fun GameArea(size:Int, difficulty:Int){
 
             Column {
                 Canvas(Modifier
-                    .background(Color.Green)
+                    .background(ForestGreen)
                     .size(areaSize)
                 ){
                     // Draw grid
                     for (i in 0..cols){
                         drawLine(
-                            color = Color.Black,
+                            color = SandBeige,
                             start = Offset(  i * cellSize, 0f ),
                             end = Offset( i * cellSize, cellSize * rows),
-                            strokeWidth = 2f,
+                            strokeWidth = 1f,
                         )
                     }
                     for (i in 0..rows){
                         drawLine(
-                            color = Color.Black,
+                            color = SandBeige,
                             start = Offset(  0f,  i * cellSize ),
                             end = Offset(  cellSize * cols,  i * cellSize ),
-                            strokeWidth = 2f,
+                            strokeWidth = 1f,
                         )
                     }
 
                     // Snake Head
                     drawRect(
-                        color = Color.Red,
+                        color = Color(0xFF00FF66),
                         size = Size(headSize, headSize),
                         topLeft = Offset(headX.value * cellSize, headY.value * cellSize)
                     )
                     // Tail
                     tail.value.forEach{
                         drawRect(
-                            color = Color.Red,
+                            color = Color(0xFF00FF66),
                             size = Size(headSize, headSize),
                             topLeft = Offset(it.first * cellSize, it.second * cellSize)
                         )
                     }
                     // Food
                     drawRect(
-                        color = Color.Black,
+                        color = Color(0xFF00FF66),
                         size = Size(headSize, headSize),
                         topLeft = Offset(food.value.first * cellSize, food.value.second * cellSize)
                     )
@@ -202,7 +206,8 @@ fun GameArea(size:Int, difficulty:Int){
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     text = promptText.value,
                     fontSize = 24.sp,
-                    fontWeight = FontWeight(500)
+                    fontWeight = FontWeight.ExtraBold,
+                    color = ForestGreen
                 )
                 Spacer(modifier = Modifier.size(5.dp))
                 if(!game.value){
@@ -216,10 +221,19 @@ fun GameArea(size:Int, difficulty:Int){
                             promptText.value = "Puan: ${score.value}"
                             direction.value = "right"
                             game.value = true},
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        colors = ButtonColors(
+                            contentColor = Color.White,
+                            containerColor = ForestGreen,
+                            disabledContentColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent
+                        ),
                     ) {
                         Text(
                             text = "Yeniden Başlat !!!",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = SandBeige
                         )
                     }
                 }
